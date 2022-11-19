@@ -12,6 +12,7 @@ import CoreLocation
 
 class ViewController: UIViewController ,CLLocationManagerDelegate{
 
+    @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var mapView: MKMapView!
 //    var latitude:Double? = nil
 //    var longitude:Double? = nil
@@ -23,17 +24,31 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
     var minTemp: Float!
     var locationManager:CLLocationManager!
     
+    //creating an array to store location names
+    var locations:[addedLocation] = []
+    
+    
+    var getData: String?
+    
+    private let goToDetailScreen = "goToDetailScreen"
+    private let goToAddLocationScreen = "goToAddLocationScreen"
+    
     
     
     override func viewDidLoad() {
-        
+        print("LOC ARR:\(locations)")
         super.viewDidLoad()
+        print("Got data")
+        print(" Got data: \(getData ?? "")")
        
         locationManager = CLLocationManager()
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestAlwaysAuthorization()
         //loadWeather(search: "Ahmedabad")
+        //locations.append(addedLocation(title: "Default1", description: "Default1"))
+        tableView.dataSource = self
+        tableView.delegate = self
         
         //check if gps in on
         DispatchQueue.global().async {
@@ -42,6 +57,7 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
                
                 print("Location is anable")
                 self.locationManager.startUpdatingLocation()
+              //  self.tableView.dataSource = self
                
                 
             }
@@ -55,8 +71,39 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
        
     }
     
+    
+    //getting data back from addLocation view controller
+//
+  
+   
+    
       
     
+    @IBAction func addTapped(_ sender: UIBarButtonItem) {
+        print("Add tapped")
+        performSegue(withIdentifier: goToAddLocationScreen, sender: self)
+    }
+    
+    @IBAction func unwindFromLocationScreen(segue: UIStoryboardSegue){
+        //let source = segue.source as! goToAddLocationScreen
+        print("in unwind")
+        
+        
+        
+            let source = segue.source as! addLocationViewController
+    //        viewController.location = String(clTemperature)
+              getData = source.locationName1
+             locations.append(addedLocation(title: source.locationName1 ?? "", description: "default"))
+            //print("GOT DATA FROM ADD LOCATION :\(source.locationName1 ??  "")")
+            //locations.append(getData ?? "")
+              print("LOCATIONS:\(locations)")
+        
+        //tell tableview to reload the data..!
+        self.tableView.reloadData()
+//
+          //  viewController.location =
+    
+    }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
@@ -330,7 +377,7 @@ extension ViewController : MKMapViewDelegate{
     
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         print("Button clicked :\(control.tag)")
-        performSegue(withIdentifier: "goToDetailScreen", sender: self)
+        performSegue(withIdentifier: goToDetailScreen, sender: self)
         
         
        
@@ -339,18 +386,18 @@ extension ViewController : MKMapViewDelegate{
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let viewController = segue.destination as! detailScreenViewController
-//        viewController.location = String(clTemperature)
-        viewController.location = location
-        viewController.currentTemp = currentTemp
-        viewController.highTemp = maxTemp
-        viewController.lowTemp = minTemp
-        viewController.condition = condition
+        if segue.identifier == goToDetailScreen{
+            let viewController = segue.destination as! detailScreenViewController
+    //        viewController.location = String(clTemperature)
+            viewController.location = location
+            viewController.currentTemp = currentTemp
+            viewController.highTemp = maxTemp
+            viewController.lowTemp = minTemp
+            viewController.condition = condition
+
+          //  viewController.location =
+        }
         
-        
-        
-    
-      //  viewController.location =
     }
     
     
@@ -378,3 +425,48 @@ class MyAnnotation: NSObject, MKAnnotation {
     
 }
 
+//extentio for table view delegate
+extension ViewController: UITableViewDelegate{
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print("Location tapped ")
+        let selectedLocation = locations[indexPath.row]
+        print("SELCTED LOCATION:\(selectedLocation.title)")
+        
+        
+        //print(tableView.)
+        
+
+    }
+  
+}
+
+//extention for table View
+
+extension ViewController: UITableViewDataSource{
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return locations.count
+        
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "tableViweCell", for: indexPath)
+        let location = locations[indexPath.row]
+        
+        var content = cell.defaultContentConfiguration()
+        
+        content.text = location.title
+        content.secondaryText = location.description
+        
+        cell.contentConfiguration = content
+        
+        return cell
+    }
+    
+    
+}
+
+struct addedLocation{
+    let title: String
+    let description: String
+    
+}

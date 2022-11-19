@@ -13,6 +13,7 @@
 		1631EF9829245488006A04AE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1631EF9629245488006A04AE /* Main.storyboard */; };
 		1631EF9A29245489006A04AE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1631EF9929245489006A04AE /* Assets.xcassets */; };
 		1631EF9D29245489006A04AE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1631EF9B29245489006A04AE /* LaunchScreen.storyboard */; };
+		16430466292941DF008CA159 /* addLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16430465292941DF008CA159 /* addLocationViewController.swift */; };
 		168266012928B2260093A540 /* detailScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 168266002928B2260093A540 /* detailScreenViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -25,6 +26,7 @@
 		1631EF9929245489006A04AE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1631EF9C29245489006A04AE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1631EF9E29245489006A04AE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		16430465292941DF008CA159 /* addLocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = addLocationViewController.swift; sourceTree = "<group>"; };
 		168266002928B2260093A540 /* detailScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = detailScreenViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -66,6 +68,7 @@
 				1631EF9B29245489006A04AE /* LaunchScreen.storyboard */,
 				1631EF9E29245489006A04AE /* Info.plist */,
 				168266002928B2260093A540 /* detailScreenViewController.swift */,
+				16430465292941DF008CA159 /* addLocationViewController.swift */,
 			);
 			path = project02;
 			sourceTree = "<group>";
@@ -141,6 +144,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				16430466292941DF008CA159 /* addLocationViewController.swift in Sources */,
 				1631EF9529245488006A04AE /* ViewController.swift in Sources */,
 				1631EF9129245488006A04AE /* AppDelegate.swift in Sources */,
 				168266012928B2260093A540 /* detailScreenViewController.swift in Sources */,
