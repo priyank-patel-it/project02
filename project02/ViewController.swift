@@ -16,7 +16,13 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
 //    var latitude:Double? = nil
 //    var longitude:Double? = nil
     var clTemperature:Float!
+    var location: String!
+    var currentTemp: Float!
+    var condition: String!
+    var maxTemp: Float!
+    var minTemp: Float!
     var locationManager:CLLocationManager!
+    
     
     
     override func viewDidLoad() {
@@ -105,6 +111,11 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
             return
         }
         
+//        guard let forecasturl = self.getForecastURL(query: search) else{
+//            print("Could not get forecast url")
+//            return
+//        }
+        
         //Step 2: Create URLSession
         let session = URLSession.shared
         
@@ -127,12 +138,17 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
                 print(weatherResponse.location.name)
                 
                 print(weatherResponse.current.temp_c)
-//                let location = CLLocation(latitude: latitude, longitude: longitude)
-//                let annotation = MyAnnotation(coordinate: location.coordinate,title: String(weatherResponse.current.temp_c) ,subtitle: "SUBTITLE")
-//                mapView.addAnnotation(annotation)
+                print("ForecastDay :\(weatherResponse.forecast.forecastday[0].date)")
                 
                 DispatchQueue.main.async {
                     self.clTemperature = weatherResponse.current.temp_c
+                    self.location = weatherResponse.location.name
+                    self.currentTemp = weatherResponse.current.temp_c
+                    self.condition = weatherResponse.current.condition.text
+                    self.maxTemp = weatherResponse.forecast.forecastday[0].day.maxtemp_c
+                    self.minTemp = weatherResponse.forecast.forecastday[0].day.mintemp_c
+                    
+                    
                     // currentTemp = weatherResponse.current.temp_c
                    
                     print(weatherResponse.current.condition.code)
@@ -142,45 +158,20 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
                     print("lat:\(weatherResponse.location.lat)")
                   
                     //
-                    self.setupMap(latitude: weatherResponse.location.lat,longtitude: weatherResponse.location.lon,currentTemp: weatherResponse.current.temp_c)
+                    self.setupMap(latitude: weatherResponse.location.lat,longtitude: weatherResponse.location.lon,currentTemp: weatherResponse.current.temp_c,weatherCondition: weatherResponse.current.condition.text,code: weatherResponse.current.condition.code,feelsLikeTemp: weatherResponse.current.feelslike_c)
                     
-                    
-//                    let location = CLLocation(latitude: CLLocationDegrees(weatherResponse.location.lat), longitude: CLLocationDegrees(weatherResponse.location.lon))
-//                    let radiusInMeters:CLLocationDistance = 1000
-//                    let region = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: radiusInMeters, longitudinalMeters: radiusInMeters)
-//                    self.mapView.setRegion(region, animated: true)
-//
-//                    //camera boundaries
-//
-//                    let cameraBoundary = MKMapView.CameraBoundary(coordinateRegion: region)
-//                    self.mapView.setCameraBoundary(cameraBoundary, animated: true)
-//
-//                    //control ZOOMING
-//                    let zoomRange = MKMapView.CameraZoomRange(maxCenterCoordinateDistance: 100000)
-//                    self.mapView.setCameraZoomRange(zoomRange, animated: true)
-//
-//                    //adding annotation
-//                    let annotation = MyAnnotation(coordinate: location.coordinate,title: String(weatherResponse.current.temp_c) ,subtitle: "SUBTITLE")
-//                    self.mapView.addAnnotation(annotation)
-//
-                    
-                    
-                
                 }
-                
             }
-            
-      //      let weather = decoder.decode(WeatherResponse.self, from: data)
         }
+        
+       
+        
         
         //step 4: Start the task
         dataTask.resume()
-        
-       
-        ///
     }
     
-    private func setupMap(latitude: Float? ,longtitude: Float? ,currentTemp: Float?){
+    private func setupMap(latitude: Float? ,longtitude: Float? ,currentTemp: Float?,weatherCondition: String?,code: Int?,feelsLikeTemp:Float?){
         
         //set delegate
         
@@ -201,7 +192,7 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
         self.mapView.setCameraZoomRange(zoomRange, animated: true)
         
         //adding annotation
-        let annotation = MyAnnotation(coordinate: location.coordinate,title: String(currentTemp ?? 0) ,subtitle: "SUBTITLE", glyphText: "Q", currentTemp: currentTemp)
+        let annotation = MyAnnotation(coordinate: location.coordinate,title: String(weatherCondition ?? "") ,subtitle: "\(currentTemp ?? 0) \(feelsLikeTemp ?? 0)", glyphText: String(currentTemp ?? 0), currentTemp: currentTemp)
         self.mapView.addAnnotation(annotation)
         
     }
@@ -216,14 +207,18 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
     private func getURL(query: String) -> URL? {
         
         let baseURL = "https://api.weatherapi.com/v1/"
-        let currentEndpoint = "current.json"
+        let currentEndpoint = "forecast.json"
         let apiKey = "9ae6f9dfbee049448ac222827221311"
 //      let query = "q=Toronto"
-        guard let url = "\(baseURL)\(currentEndpoint)?key=\(apiKey)&q=\(query)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)else{
+        guard let url = "\(baseURL)\(currentEndpoint)?key=\(apiKey)&q=\(query)&days=7".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)else{
             return nil
         }
         return URL(string: url)
     }
+    
+  
+
+    
     
     private func parseJson(data: Data) -> WeatherResponse? {
         let decoder = JSONDecoder()
@@ -244,7 +239,27 @@ struct WeatherResponse:Decodable {
     
     let location : Location
     let current : Weather
+    let forecast: Forecast
 }
+
+struct Forecast: Decodable{
+    let forecastday: [ForecastDay]
+}
+struct ForecastDay: Decodable{
+     let date: String
+    let day: Day
+}
+
+struct Day: Decodable{
+    let maxtemp_c: Float
+    let mintemp_c: Float
+    
+}
+
+//struct ForecastDay:Decodable{
+//    let date: String
+//}
+
 
 struct Location:Decodable{
     let name: String
@@ -256,6 +271,7 @@ struct Weather:Decodable{
     let temp_c: Float
     let temp_f:Float
     let condition: WeatherCondition
+    let feelslike_c:Float
 }
 
 struct WeatherCondition:Decodable{
@@ -308,18 +324,33 @@ extension ViewController : MKMapViewDelegate{
             }
             
         }
-        
-        
-       
-        
-        
-        
-        
+  
         return view
     }
     
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         print("Button clicked :\(control.tag)")
+        performSegue(withIdentifier: "goToDetailScreen", sender: self)
+        
+        
+       
+        //to access data
+        // view.annotation.
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let viewController = segue.destination as! detailScreenViewController
+//        viewController.location = String(clTemperature)
+        viewController.location = location
+        viewController.currentTemp = currentTemp
+        viewController.highTemp = maxTemp
+        viewController.lowTemp = minTemp
+        viewController.condition = condition
+        
+        
+        
+    
+      //  viewController.location =
     }
     
     
