@@ -93,10 +93,16 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
             let source = segue.source as! addLocationViewController
     //        viewController.location = String(clTemperature)
               getData = source.locationName1
+        // setting annotation when user save the location on list
+              loadWeather(search: source.locationName1)
              locations.append(addedLocation(title: source.locationName1 ?? "", description: "default"))
             //print("GOT DATA FROM ADD LOCATION :\(source.locationName1 ??  "")")
             //locations.append(getData ?? "")
               print("LOCATIONS:\(locations)")
+        
+        //setting the annotation on map on tapped list Item
+        
+        
         
         //tell tableview to reload the data..!
         self.tableView.reloadData()
@@ -137,6 +143,7 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
                 
                 
                self.loadWeather(search: location )
+                
                 
 
                 
@@ -431,6 +438,9 @@ extension ViewController: UITableViewDelegate{
         print("Location tapped ")
         let selectedLocation = locations[indexPath.row]
         print("SELCTED LOCATION:\(selectedLocation.title)")
+        
+        loadWeather(search: selectedLocation.title)
+        
         
         
         //print(tableView.)
