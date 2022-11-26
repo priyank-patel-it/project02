@@ -14,6 +14,9 @@ class addLocationViewController: UIViewController ,UITextFieldDelegate{
     @IBOutlet weak var searchTextField: UITextField!
     
     var locationName1: String?
+    var currentTemp1: Float?
+    var highTemp1: Float?
+    var lowTemp1: Float?
     
     private let goToMainViewController = "goToMainViewController"
     
@@ -99,6 +102,10 @@ class addLocationViewController: UIViewController ,UITextFieldDelegate{
                     print("Condition:\(weatherResponse.current.condition.text)")
                     
                     self.weahterConditionLabel.text = weatherResponse.current.condition.text
+                    self.currentTemp1 = weatherResponse.forecast.forecastday[0].day.avgtemp_c
+                    self.highTemp1 = weatherResponse.forecast.forecastday[0].day.maxtemp_c
+                    self.lowTemp1 = weatherResponse.forecast.forecastday[0].day.mintemp_c
+                    
                     
                     
                     
@@ -116,10 +123,10 @@ class addLocationViewController: UIViewController ,UITextFieldDelegate{
     private func getURL(query: String) -> URL? {
         
         let baseURL = "https://api.weatherapi.com/v1/"
-        let currentEndpoint = "current.json"
+        let currentEndpoint = "forecast.json"
         let apiKey = "9ae6f9dfbee049448ac222827221311"
 //      let query = "q=Toronto"
-        guard let url = "\(baseURL)\(currentEndpoint)?key=\(apiKey)&q=\(query)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)else{
+        guard let url = "\(baseURL)\(currentEndpoint)?key=\(apiKey)&q=\(query)&days=8".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)else{
             return nil
         }
         return URL(string: url)
@@ -141,7 +148,29 @@ class addLocationViewController: UIViewController ,UITextFieldDelegate{
         
         let location : Location
         let current : Weather
+        let forecast: Forecast
     }
+    
+    struct Forecast: Decodable{
+        let forecastday: [ForecastDay]
+    }
+    struct ForecastDay: Decodable{
+         let date: String
+        let day: Day
+    }
+
+    struct Day: Decodable{
+        let maxtemp_c: Float
+        let mintemp_c: Float
+        let avgtemp_c: Float
+        let condition: Condition
+        
+    }
+
+    struct Condition: Decodable{
+        let code: Int
+    }
+    
     struct Location:Decodable{
         let name: String
         

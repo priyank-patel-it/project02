@@ -14,15 +14,18 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var mapView: MKMapView!
-//    var latitude:Double? = nil
-//    var longitude:Double? = nil
+
     var clTemperature:Float!
     var location: String!
     var currentTemp: Float!
     var condition: String!
     var maxTemp: Float!
     var minTemp: Float!
+    var avgTemp: Float!
+    var forecastCode: Int!
+
     var locationManager:CLLocationManager!
+    var foreCast:[forecastday] = []
     
     //creating an array to store location names
     var locations:[addedLocation] = []
@@ -67,22 +70,18 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
         }
         
         
-       // addAnotation(location: <#T##CLLocation#>)
+       // addAnotation(location: T##CLLocation)
        
     }
     
-    
-    //getting data back from addLocation view controller
-//
-  
-   
-    
-      
+
     
     @IBAction func addTapped(_ sender: UIBarButtonItem) {
         print("Add tapped")
         performSegue(withIdentifier: goToAddLocationScreen, sender: self)
     }
+    
+    //getting data back from addLocation view controller
     
     @IBAction func unwindFromLocationScreen(segue: UIStoryboardSegue){
         //let source = segue.source as! goToAddLocationScreen
@@ -95,7 +94,7 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
               getData = source.locationName1
         // setting annotation when user save the location on list
               loadWeather(search: source.locationName1)
-             locations.append(addedLocation(title: source.locationName1 ?? "", description: "default"))
+        locations.append(addedLocation(title: source.locationName1 ?? "", description: "\(source.currentTemp1 ?? 0)C  H:\(source.highTemp1 ?? 0)   L:\(source.lowTemp1 ?? 0)" ))
             //print("GOT DATA FROM ADD LOCATION :\(source.locationName1 ??  "")")
             //locations.append(getData ?? "")
               print("LOCATIONS:\(locations)")
@@ -129,7 +128,7 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
         print("Longitude: of cl\(longitude)")
         
         
-    
+      //  self.loadWeather(search: location )
         let geocoder = CLGeocoder()
         geocoder.reverseGeocodeLocation(currentLocation){(placemarks,error) in
             if (error != nil){
@@ -140,16 +139,16 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
                 let placemark = placemarks![0]
                 let location = placemark.locality
                 print("CLOCATION :\(location ?? "l")")
-                
+
                 
                self.loadWeather(search: location )
                 
                 
 
-                
+
             }
         }
-        
+//
         
         
     }
@@ -201,6 +200,13 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
                     self.condition = weatherResponse.current.condition.text
                     self.maxTemp = weatherResponse.forecast.forecastday[0].day.maxtemp_c
                     self.minTemp = weatherResponse.forecast.forecastday[0].day.mintemp_c
+                   
+                    for i in 1...7{
+                        self.foreCast.append(forecastday(code:weatherResponse.forecast.forecastday[i].day.condition.code, day: weatherResponse.forecast.forecastday[i].date,title: weatherResponse.forecast.forecastday[i].day.avgtemp_c))
+                    }
+                    print("FORECAST OF 7 DAYS:\(self.foreCast)")
+                    
+                    
                     
                     
                     // currentTemp = weatherResponse.current.temp_c
@@ -213,6 +219,7 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
                   
                     //
                     self.setupMap(latitude: weatherResponse.location.lat,longtitude: weatherResponse.location.lon,currentTemp: weatherResponse.current.temp_c,weatherCondition: weatherResponse.current.condition.text,code: weatherResponse.current.condition.code,feelsLikeTemp: weatherResponse.current.feelslike_c)
+                    
                     
                 }
             }
@@ -246,7 +253,8 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
         self.mapView.setCameraZoomRange(zoomRange, animated: true)
         
         //adding annotation
-        let annotation = MyAnnotation(coordinate: location.coordinate,title: String(weatherCondition ?? "") ,subtitle: "\(currentTemp ?? 0) \(feelsLikeTemp ?? 0)", glyphText: String(currentTemp ?? 0), currentTemp: currentTemp)
+        let annotation = MyAnnotation(coordinate: location.coordinate,title: String(weatherCondition ?? "") ,subtitle: "\(currentTemp ?? 0) \(feelsLikeTemp ?? 0)", glyphText: String(currentTemp ?? 0), currentTemp: currentTemp, code: String(code ?? 0))
+    
         self.mapView.addAnnotation(annotation)
         
     }
@@ -264,11 +272,12 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
         let currentEndpoint = "forecast.json"
         let apiKey = "9ae6f9dfbee049448ac222827221311"
 //      let query = "q=Toronto"
-        guard let url = "\(baseURL)\(currentEndpoint)?key=\(apiKey)&q=\(query)&days=7".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)else{
+        guard let url = "\(baseURL)\(currentEndpoint)?key=\(apiKey)&q=\(query)&days=8".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)else{
             return nil
         }
         return URL(string: url)
     }
+    
     
   
 
@@ -307,7 +316,13 @@ struct ForecastDay: Decodable{
 struct Day: Decodable{
     let maxtemp_c: Float
     let mintemp_c: Float
+    let avgtemp_c: Float
+    let condition: Condition
     
+}
+
+struct Condition: Decodable{
+    let code: Int
 }
 
 //struct ForecastDay:Decodable{
@@ -358,13 +373,14 @@ extension ViewController : MKMapViewDelegate{
             button.tag = 007
             view.rightCalloutAccessoryView =  button
             
-            let image = UIImage(systemName: "graduationcap.circle.fill")
-            view.leftCalloutAccessoryView = UIImageView(image: image)
             
+//            let image = UIImage(systemName: "graduationcap.circle.fill")
+//            view.leftCalloutAccessoryView = UIImageView(image: image)
+//
             //change the color of marker
             
             
-            view.markerTintColor = UIColor.purple
+            //view.markerTintColor = UIColor.purple
             
             //change the color of accessories
             view.tintColor = UIColor.systemRed
@@ -373,14 +389,32 @@ extension ViewController : MKMapViewDelegate{
             if let myAnnotation = annotation as? MyAnnotation{
                 view.glyphText = myAnnotation.glyphText
                 print("CURR TEMP:::\(myAnnotation.currentTemp ?? 0)")
+                print("CODE:\(myAnnotation.code ?? "")")
+                
+                //let intCode = Int(myAnnotation.code ?? "0")
+                
+      
+                if myAnnotation.code != "1183"{
+                    print("code is 1183")
+                    let image = UIImage(systemName: "cloud.sun")
+                    view.leftCalloutAccessoryView = UIImageView(image: image)
+                }
+                
+                
+                
+                let image = UIImage(systemName: "cloud.drizzle")
+                view.leftCalloutAccessoryView = UIImageView(image: image)
+                
                 //Add condition for tintColor
-                view.markerTintColor = UIColor.red
+                
             }
             
         }
   
         return view
     }
+    
+   
     
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         print("Button clicked :\(control.tag)")
@@ -401,14 +435,20 @@ extension ViewController : MKMapViewDelegate{
             viewController.highTemp = maxTemp
             viewController.lowTemp = minTemp
             viewController.condition = condition
+            viewController.foreCastList = foreCast
+            foreCast=[]
+            
 
           //  viewController.location =
         }
+        foreCast=[]
         
     }
-    
+   
+
     
 }
+
 
 
 class MyAnnotation: NSObject, MKAnnotation {
@@ -417,15 +457,17 @@ class MyAnnotation: NSObject, MKAnnotation {
     var subtitle: String?
     var glyphText: String?
     var currentTemp: Float?
+    var code: String?
     
     
     
-    init(coordinate:CLLocationCoordinate2D, title:String, subtitle:String, glyphText:String? = nil,currentTemp:Float?) {
+    init(coordinate:CLLocationCoordinate2D, title:String, subtitle:String, glyphText:String? = nil,currentTemp:Float?,code:String?) {
         self.coordinate = coordinate
         self.title = title
         self.subtitle = subtitle
         self.glyphText = glyphText
         self.currentTemp = currentTemp
+        self.code = code
         super.init()
     }
     
@@ -439,7 +481,10 @@ extension ViewController: UITableViewDelegate{
         let selectedLocation = locations[indexPath.row]
         print("SELCTED LOCATION:\(selectedLocation.title)")
         
+        
         loadWeather(search: selectedLocation.title)
+        
+        foreCast=[]
         
         
         
@@ -456,10 +501,12 @@ extension ViewController: UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return locations.count
         
+        
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "tableViweCell", for: indexPath)
+        cell.contentView.backgroundColor = UIColor.systemMint
         let location = locations[indexPath.row]
         
         var content = cell.defaultContentConfiguration()
@@ -480,3 +527,211 @@ struct addedLocation{
     let description: String
     
 }
+
+struct forecastday{
+    let code: Int
+    let day: String
+    let title: Float
+   
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//
+/////
+/////
+/////
+//switch intCode{
+//
+//
+//case 1003:
+//
+//    let image = UIImage(systemName: "cloud.sun")
+//    view.leftCalloutAccessoryView = UIImageView(image: image)
+//
+//    break
+//case 1006:
+//
+//    let image = UIImage(systemName: "cloud")
+//    view.leftCalloutAccessoryView = UIImageView(image: image)
+//    break
+//case 1009:
+//
+//    let image = UIImage(systemName: "cloud.fill")
+//    view.leftCalloutAccessoryView = UIImageView(image: image)
+//    break
+//case 1030:
+//
+//    let image = UIImage(systemName: "cloud.fog.fill")
+//    view.leftCalloutAccessoryView = UIImageView(image: image)
+//    break
+//case 1063:
+//
+//    let image = UIImage(systemName: "cloud.drizzle")
+//    view.leftCalloutAccessoryView = UIImageView(image: image)
+//    break
+//case 1066:
+//
+//    let image = UIImage(systemName: "cloud.snow")
+//    view.leftCalloutAccessoryView = UIImageView(image: image)
+//    break
+//case 1069:
+//
+//    let image = UIImage(systemName: "cloud.sleet")
+//    view.leftCalloutAccessoryView = UIImageView(image: image)
+//    break
+//case 1072:
+//
+//    let image = UIImage(systemName: "cloud.hail")
+//    view.leftCalloutAccessoryView = UIImageView(image: image)
+//    break
+//case 1135:
+//
+//    let image = UIImage(systemName: "cloud.fog.circle")
+//    view.leftCalloutAccessoryView = UIImageView(image: image)
+//    break
+//case 1147:
+//
+//    let image = UIImage(systemName: "cloud.fog.circle.fill")
+//    view.leftCalloutAccessoryView = UIImageView(image: image)
+//    break
+//case 1150:
+//
+//    let image = UIImage(systemName: "cloud.sun.rain")
+//    view.leftCalloutAccessoryView = UIImageView(image: image)
+//    break
+//case 1153:
+//
+//    let image = UIImage(systemName: "cloud.drizzle")
+//    view.leftCalloutAccessoryView = UIImageView(image: image)
+//    break
+//case 1183:
+//
+//    let image = UIImage(systemName: "sun.max.fill")
+//    view.leftCalloutAccessoryView = UIImageView(image: image)
+//    break
+//case 1186:
+//
+//    let image = UIImage(systemName: "cloud.drizzle.fill")
+//    view.leftCalloutAccessoryView = UIImageView(image: image)
+//    break
+//case 1189:
+//
+//    let image = UIImage(systemName: "cloud.rain.fill")
+//    view.leftCalloutAccessoryView = UIImageView(image: image)
+//    break
+//case 1192:
+//
+//    let image = UIImage(systemName: "cloud.heavyrain")
+//    view.leftCalloutAccessoryView = UIImageView(image: image)
+//    break
+//case 1198:
+//
+//    let image = UIImage(systemName: "cloud.hail.fill")
+//    view.leftCalloutAccessoryView = UIImageView(image: image)
+//    break
+//case 1201:
+//
+//    let image = UIImage(systemName: "cloud.hail.circle.fill")
+//    view.leftCalloutAccessoryView = UIImageView(image: image)
+//    break
+//case 1204:
+//
+//    let image = UIImage(systemName: "cloud.sleet")
+//    view.leftCalloutAccessoryView = UIImageView(image: image)
+//    break
+//case 1207:
+//
+//    let image = UIImage(systemName: "cloud.sleet.fill")
+//    view.leftCalloutAccessoryView = UIImageView(image: image)
+//    break
+//case 1210:
+//
+//    let image = UIImage(systemName: "snowflake")
+//    view.leftCalloutAccessoryView = UIImageView(image: image)
+//    break
+//case 1213:
+//
+//    let image = UIImage(systemName: "cloud.snow")
+//    view.leftCalloutAccessoryView = UIImageView(image: image)
+//    break
+//case 1219:
+//
+//    let image = UIImage(systemName: "cloud.snow.fill")
+//    view.leftCalloutAccessoryView = UIImageView(image: image)
+//    break
+//case 1225:
+//
+//    let image = UIImage(systemName: "cloud.snow.circle")
+//    view.leftCalloutAccessoryView = UIImageView(image: image)
+//    break
+//case 1240:
+//
+//    let image = UIImage(systemName: "cloud.drizzle")
+//    view.leftCalloutAccessoryView = UIImageView(image: image)
+//    break
+//case 1243:
+//
+//    let image = UIImage(systemName: "cloud.heavyrain.fill")
+//    view.leftCalloutAccessoryView = UIImageView(image: image)
+//    break
+//default:
+//    print("Nothig")
+//
+//}
+
+//switch myAnnotation.currentTemp!{
+//case -100.0...0.0 :
+//    view.markerTintColor = UIColor.systemBlue
+//    break
+//case 0.0...11.0 :
+//    view.markerTintColor = UIColor.systemBlue
+//    break
+//case 12.0...16.0 :
+//    view.markerTintColor = UIColor.systemMint
+//    break
+//case 17.0...24.0 :
+//    view.markerTintColor = UIColor.systemOrange
+//    break
+//case 25.0...30.0 :
+//    view.markerTintColor = UIColor.black
+//    break
+//case 35.0...100.0 :
+//    view.markerTintColor = UIColor.red
+//    break
+//
+//default:
+//    view.markerTintColor = UIColor.purple
+//}
