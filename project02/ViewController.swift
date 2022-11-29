@@ -48,8 +48,7 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestAlwaysAuthorization()
-        //loadWeather(search: "Ahmedabad")
-        //locations.append(addedLocation(title: "Default1", description: "Default1"))
+       
         tableView.dataSource = self
         tableView.delegate = self
         
@@ -60,7 +59,7 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
                
                 print("Location is anable")
                 self.locationManager.startUpdatingLocation()
-              //  self.tableView.dataSource = self
+            
                
                 
             }
@@ -69,8 +68,6 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
             }
         }
         
-        
-       // addAnotation(location: T##CLLocation)
        
     }
     
@@ -86,17 +83,21 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
     @IBAction func unwindFromLocationScreen(segue: UIStoryboardSegue){
         //let source = segue.source as! goToAddLocationScreen
         print("in unwind")
+       
+
         
         
         
             let source = segue.source as! addLocationViewController
-    //        viewController.location = String(clTemperature)
+   
               getData = source.locationName1
+        
         // setting annotation when user save the location on list
-              loadWeather(search: source.locationName1)
         locations.append(addedLocation(title: source.locationName1 ?? "", description: "\(source.currentTemp1 ?? 0)C  H:\(source.highTemp1 ?? 0)   L:\(source.lowTemp1 ?? 0)" ))
+        loadWeather(search: source.locationName1)
+        
             //print("GOT DATA FROM ADD LOCATION :\(source.locationName1 ??  "")")
-            //locations.append(getData ?? "")
+    
               print("LOCATIONS:\(locations)")
         
         //setting the annotation on map on tapped list Item
@@ -164,10 +165,8 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
             return
         }
         
-//        guard let forecasturl = self.getForecastURL(query: search) else{
-//            print("Could not get forecast url")
-//            return
-//        }
+
+
         
         //Step 2: Create URLSession
         let session = URLSession.shared
@@ -259,18 +258,12 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
         
     }
     
-    
-//    private func addAnotation(location:CLLocation){
-//
-//
-//        let annotation = MyAnnotation(coordinate: location.coordinate)
-//        mapView.addAnnotation(annotation)
-//    }
+
     private func getURL(query: String) -> URL? {
         
         let baseURL = "https://api.weatherapi.com/v1/"
         let currentEndpoint = "forecast.json"
-        let apiKey = "9ae6f9dfbee049448ac222827221311"
+        let apiKey = "6cd0a76519b345399c7130516222911"
 //      let query = "q=Toronto"
         guard let url = "\(baseURL)\(currentEndpoint)?key=\(apiKey)&q=\(query)&days=8".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)else{
             return nil
@@ -351,64 +344,208 @@ struct WeatherCondition:Decodable{
 extension ViewController : MKMapViewDelegate{
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         let identifier = "My identifier"
-        var view: MKMarkerAnnotationView
+        let view = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+        view.canShowCallout = true
         
-        //check to see if we have a view we can reuse
-        if let dequeuedView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKMarkerAnnotationView{
-           //get updated annotation
-            dequeuedView.annotation = annotation
-            
-            //pass back out reusable view
-            view = dequeuedView
-        }else{
-            view = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: identifier)
-            view.canShowCallout = true
-            
-            
-            //set the position of callout
-            view.calloutOffset = CGPoint(x: 10, y: 10)
-             //add a button to right side of callout
-            
-            let button = UIButton(type: .detailDisclosure)
-            button.tag = 007
-            view.rightCalloutAccessoryView =  button
-            
-            
-//            let image = UIImage(systemName: "graduationcap.circle.fill")
-//            view.leftCalloutAccessoryView = UIImageView(image: image)
+        
+                 //set the position of callout
+                view.calloutOffset = CGPoint(x: 10, y: 10)
+                //add a button to right side of callout
+        
+                 let button = UIButton(type: .detailDisclosure)
+                 button.tag = 007
+                 view.rightCalloutAccessoryView =  button
+        
+        
+                    //add the title of annotation
+                    if let myAnnotation = annotation as? MyAnnotation{
+                        view.glyphText = myAnnotation.glyphText
+                        print("CURR TEMP:::\(myAnnotation.currentTemp ?? 0)")
+                        print("CODE:\(myAnnotation.code ?? "")")
+                        
+                        switch Int(myAnnotation.code ?? ""){
+                            
+                        case 1000:
+                        
+                            let image = UIImage(systemName: "sun.max")
+                            view.leftCalloutAccessoryView = UIImageView(image: image)
+                        
+                            break
+                        
+                        case 1003:
+                        
+                            let image = UIImage(systemName: "cloud.sun")
+                            view.leftCalloutAccessoryView = UIImageView(image: image)
+                        
+                            break
+                        case 1006:
+                        
+                            let image = UIImage(systemName: "cloud")
+                            view.leftCalloutAccessoryView = UIImageView(image: image)
+                            break
+                        case 1009:
+                        
+                            let image = UIImage(systemName: "cloud.fill")
+                            view.leftCalloutAccessoryView = UIImageView(image: image)
+                            break
+                        case 1030:
+                        
+                            let image = UIImage(systemName: "cloud.fog.fill")
+                            view.leftCalloutAccessoryView = UIImageView(image: image)
+                            break
+                        case 1063:
+                        
+                            let image = UIImage(systemName: "cloud.drizzle")
+                            view.leftCalloutAccessoryView = UIImageView(image: image)
+                            break
+                        case 1066:
+                        
+                            let image = UIImage(systemName: "cloud.snow")
+                            view.leftCalloutAccessoryView = UIImageView(image: image)
+                            break
+                        case 1069:
+                        
+                            let image = UIImage(systemName: "cloud.sleet")
+                            view.leftCalloutAccessoryView = UIImageView(image: image)
+                            break
+                        case 1072:
+                        
+                            let image = UIImage(systemName: "cloud.hail")
+                            view.leftCalloutAccessoryView = UIImageView(image: image)
+                            break
+                        case 1135:
+                        
+                            let image = UIImage(systemName: "cloud.fog.circle")
+                            view.leftCalloutAccessoryView = UIImageView(image: image)
+                            break
+                        case 1147:
+                        
+                            let image = UIImage(systemName: "cloud.fog.circle.fill")
+                            view.leftCalloutAccessoryView = UIImageView(image: image)
+                            break
+                        case 1150:
+                        
+                            let image = UIImage(systemName: "cloud.sun.rain")
+                            view.leftCalloutAccessoryView = UIImageView(image: image)
+                            break
+                        case 1153:
+                        
+                            let image = UIImage(systemName: "cloud.drizzle")
+                            view.leftCalloutAccessoryView = UIImageView(image: image)
+                            break
+                        case 1183:
+                        
+                            let image = UIImage(systemName: "sun.max.fill")
+                            view.leftCalloutAccessoryView = UIImageView(image: image)
+                            break
+                        case 1186:
+                        
+                            let image = UIImage(systemName: "cloud.drizzle.fill")
+                            view.leftCalloutAccessoryView = UIImageView(image: image)
+                            break
+                        case 1189:
+                        
+                            let image = UIImage(systemName: "cloud.rain.fill")
+                            view.leftCalloutAccessoryView = UIImageView(image: image)
+                            break
+                        case 1192:
+                        
+                            let image = UIImage(systemName: "cloud.heavyrain")
+                            view.leftCalloutAccessoryView = UIImageView(image: image)
+                            break
+                        case 1198:
+                        
+                            let image = UIImage(systemName: "cloud.hail.fill")
+                            view.leftCalloutAccessoryView = UIImageView(image: image)
+                            break
+                        case 1201:
+                        
+                            let image = UIImage(systemName: "cloud.hail.circle.fill")
+                            view.leftCalloutAccessoryView = UIImageView(image: image)
+                            break
+                        case 1204:
+                        
+                            let image = UIImage(systemName: "cloud.sleet")
+                            view.leftCalloutAccessoryView = UIImageView(image: image)
+                            break
+                        case 1207:
+                        
+                            let image = UIImage(systemName: "cloud.sleet.fill")
+                            view.leftCalloutAccessoryView = UIImageView(image: image)
+                            break
+                        case 1210:
+                        
+                            let image = UIImage(systemName: "snowflake")
+                            view.leftCalloutAccessoryView = UIImageView(image: image)
+                            break
+                        case 1213:
+                        
+                            let image = UIImage(systemName: "cloud.snow")
+                            view.leftCalloutAccessoryView = UIImageView(image: image)
+                            break
+                        case 1219:
+                        
+                            let image = UIImage(systemName: "cloud.snow.fill")
+                            view.leftCalloutAccessoryView = UIImageView(image: image)
+                            break
+                        case 1225:
+                        
+                            let image = UIImage(systemName: "cloud.snow.circle")
+                            view.leftCalloutAccessoryView = UIImageView(image: image)
+                            break
+                        case 1240:
+                        
+                            let image = UIImage(systemName: "cloud.drizzle")
+                            view.leftCalloutAccessoryView = UIImageView(image: image)
+                            break
+                        case 1243:
+                        
+                            let image = UIImage(systemName: "cloud.heavyrain.fill")
+                            view.leftCalloutAccessoryView = UIImageView(image: image)
+                            break
+                        default:
+                            print("Nothig")
+                        
+                        }
+                        
+                        switch myAnnotation.currentTemp!{
+                        case -100.0...0.0 :
+                            view.markerTintColor = UIColor.purple
+                            break
+                        case 0.0...11.0 :
+                            view.markerTintColor = UIColor.systemBlue
+                            break
+                        case 12.0...16.0 :
+                            view.markerTintColor = UIColor.systemTeal
+                            break
+                        case 17.0...24.0 :
+                            view.markerTintColor = UIColor.systemOrange
+                            break
+                        case 25.0...30.0 :
+                            view.markerTintColor = UIColor.red
+                            break
+                        case 35.0...100.0 :
+                            view.markerTintColor = UIColor.systemRed
+                            break
+                        
+                        default:
+                            view.markerTintColor = UIColor.blue
+                        }
+
+                        
+                        
+                        
+                        
+//                                   let image = UIImage(systemName: "cloud.fill")
+//                                   view.leftCalloutAccessoryView = UIImageView(image: image)
 //
-            //change the color of marker
-            
-            
-            //view.markerTintColor = UIColor.purple
-            
-            //change the color of accessories
-            view.tintColor = UIColor.systemRed
-            
-            //add the title of annotation
-            if let myAnnotation = annotation as? MyAnnotation{
-                view.glyphText = myAnnotation.glyphText
-                print("CURR TEMP:::\(myAnnotation.currentTemp ?? 0)")
-                print("CODE:\(myAnnotation.code ?? "")")
-                
-                //let intCode = Int(myAnnotation.code ?? "0")
-                
-      
-                if myAnnotation.code != "1183"{
-                    print("code is 1183")
-                    let image = UIImage(systemName: "cloud.sun")
-                    view.leftCalloutAccessoryView = UIImageView(image: image)
-                }
-                
-                
-                
-                let image = UIImage(systemName: "cloud.drizzle")
-                view.leftCalloutAccessoryView = UIImageView(image: image)
-                
-                //Add condition for tintColor
-                
-            }
-            
+//                                    view.markerTintColor = UIColor.purple
+                        
+                                    //change the color of accessories
+                                    view.tintColor = UIColor.systemRed
+                        
+                        
+        
         }
   
         return view
@@ -506,7 +643,7 @@ extension ViewController: UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "tableViweCell", for: indexPath)
-        cell.contentView.backgroundColor = UIColor.systemMint
+        cell.backgroundColor = UIColor.systemTeal
         let location = locations[indexPath.row]
         
         var content = cell.defaultContentConfiguration()

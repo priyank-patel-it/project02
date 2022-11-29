@@ -16,7 +16,7 @@ class detailScreenViewController: UIViewController, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "forecastCell", for: indexPath)
         let foreCastcell = foreCastList[indexPath.row]
         var content = cell.defaultContentConfiguration()
-        cell.contentView.backgroundColor = UIColor.systemMint
+        cell.backgroundColor = UIColor.systemTeal
         content.text = "\(String(foreCastcell.code))          \(foreCastcell.day) "
        // content.text = foreCastcell.day
         content.secondaryText =  String(foreCastcell.title)

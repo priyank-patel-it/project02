@@ -124,7 +124,7 @@ class addLocationViewController: UIViewController ,UITextFieldDelegate{
         
         let baseURL = "https://api.weatherapi.com/v1/"
         let currentEndpoint = "forecast.json"
-        let apiKey = "9ae6f9dfbee049448ac222827221311"
+        let apiKey = "6cd0a76519b345399c7130516222911"
 //      let query = "q=Toronto"
         guard let url = "\(baseURL)\(currentEndpoint)?key=\(apiKey)&q=\(query)&days=8".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)else{
             return nil
