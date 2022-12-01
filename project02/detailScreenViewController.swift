@@ -16,12 +16,173 @@ class detailScreenViewController: UIViewController, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "forecastCell", for: indexPath)
         let foreCastcell = foreCastList[indexPath.row]
         var content = cell.defaultContentConfiguration()
+        //content.image = UIImage(named: "osx_design_view_messages")
         cell.backgroundColor = UIColor.systemTeal
-        content.text = "\(String(foreCastcell.code))          \(foreCastcell.day) "
-       // content.text = foreCastcell.day
+        
+        let isoDate = foreCastcell.day
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX") // set locale to reliable US_POSIX
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let date = dateFormatter.date(from:isoDate)!
+
+                
+        
+//
+            let formatter  = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd"
+        let todayDate = formatter.date(from: foreCastcell.day)!
+            let myCalendar = Calendar(identifier: .gregorian)
+            let weekDay = myCalendar.component(.weekday, from: todayDate)
+        
+//        let weekDay = Calendar.current.component(.weekday, from: date)
+//
+        let weekday = ["Noday","Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
+       
+        
+        
+        
+        
+        content.text = "  \(weekday[weekDay]) "
         content.secondaryText =  String(foreCastcell.title)
+        
+        
+        
+        switch foreCastcell.code{
+            
+        case 1000:
+        
+            content.image = UIImage(systemName: "sun.max")
+            
+            
+            break
+        
+        case 1003:
+        
+            content.image = UIImage(systemName: "cloud.sun")
+            
+        
+            break
+        case 1006:
+            content.image = UIImage(systemName: "cloud")
+         
+            break
+        case 1009:
+        
+            content.image = UIImage(systemName: "cloud.fill")
+            
+            break
+        case 1030:
+        
+            content.image = UIImage(systemName: "cloud.fog.fill")
+           
+            break
+        case 1063:
+        
+            content.image = UIImage(systemName: "cloud.drizzle")
+            
+            break
+        case 1066:
+        
+            content.image = UIImage(systemName: "cloud.snow")
+            
+            break
+        case 1069:
+        
+            content.image = UIImage(systemName: "cloud.sleet")
+          
+            break
+        case 1072:
+        
+            content.image = UIImage(systemName: "cloud.hail")
+            
+            break
+        case 1135:
+        
+            content.image = UIImage(systemName: "cloud.fog.circle")
+        
+            break
+        case 1147:
+        
+            content.image = UIImage(systemName: "cloud.fog.circle.fill")
+            
+            break
+        case 1150:
+        
+            content.image = UIImage(systemName: "cloud.sun.rain")
+           
+            break
+        case 1153:
+        
+            content.image = UIImage(systemName: "cloud.drizzle")
+        
+            break
+        case 1183:
+        
+            content.image = UIImage(systemName: "sun.max.fill")
+            break
+        case 1186:
+        
+            content.image = UIImage(systemName: "cloud.drizzle.fill")
+            break
+        case 1189:
+        
+            content.image = UIImage(systemName: "cloud.rain.fill")
+            break
+        case 1192:
+        
+            content.image = UIImage(systemName: "cloud.heavyrain")
+            break
+        case 1198:
+        
+            content.image = UIImage(systemName: "cloud.hail.fill")
+            break
+        case 1201:
+        
+            content.image = UIImage(systemName: "cloud.hail.circle.fill")
+            break
+        case 1204:
+        
+            content.image = UIImage(systemName: "cloud.sleet")
+            break
+        case 1207:
+        
+            content.image = UIImage(systemName: "cloud.sleet.fill")
+            break
+        case 1210:
+        
+            content.image = UIImage(systemName: "snowflake")
+            break
+        case 1213:
+        
+            content.image = UIImage(systemName: "cloud.snow")
+            break
+        case 1219:
+        
+            content.image = UIImage(systemName: "cloud.snow.fill")
+            break
+        case 1225:
+        
+            content.image = UIImage(systemName: "cloud.snow.circle")
+            break
+        case 1240:
+        
+            content.image = UIImage(systemName: "cloud.drizzle")
+            break
+        case 1243:
+        
+            content.image = UIImage(systemName: "cloud.heavyrain.fill")
+            break
+        default:
+            content.image = UIImage(systemName: "cloud.heavyrain.fill")
+             break
+        }
+        
+        
+        
         content.prefersSideBySideTextAndSecondaryText = true
         cell.contentConfiguration = content
+        
         return cell
     }
     
@@ -51,19 +212,11 @@ class detailScreenViewController: UIViewController, UITableViewDataSource {
         highTempLabel.text = "\(highTemp ?? 0)"
         lowTempLabel.text = "\(lowTemp ?? 0)"
 
-        // Do any additional setup after loading the view.
+    
     }
     
 
-    /*
-    // MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }
 

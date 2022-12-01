@@ -23,6 +23,7 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
     var minTemp: Float!
     var avgTemp: Float!
     var forecastCode: Int!
+    var currentCode: Int!
 
     var locationManager:CLLocationManager!
     var foreCast:[forecastday] = []
@@ -78,20 +79,17 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
         performSegue(withIdentifier: goToAddLocationScreen, sender: self)
     }
     
+    
     //getting data back from addLocation view controller
     
     @IBAction func unwindFromLocationScreen(segue: UIStoryboardSegue){
         //let source = segue.source as! goToAddLocationScreen
         print("in unwind")
        
-
-        
-        
         
             let source = segue.source as! addLocationViewController
    
               getData = source.locationName1
-        
         // setting annotation when user save the location on list
         locations.append(addedLocation(title: source.locationName1 ?? "", description: "\(source.currentTemp1 ?? 0)C  H:\(source.highTemp1 ?? 0)   L:\(source.lowTemp1 ?? 0)" ))
         loadWeather(search: source.locationName1)
@@ -164,10 +162,7 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
             print("Could not get url")
             return
         }
-        
-
-
-        
+   
         //Step 2: Create URLSession
         let session = URLSession.shared
         
@@ -199,6 +194,7 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
                     self.condition = weatherResponse.current.condition.text
                     self.maxTemp = weatherResponse.forecast.forecastday[0].day.maxtemp_c
                     self.minTemp = weatherResponse.forecast.forecastday[0].day.mintemp_c
+                    self.currentCode = weatherResponse.current.condition.code
                    
                     for i in 1...7{
                         self.foreCast.append(forecastday(code:weatherResponse.forecast.forecastday[i].day.condition.code, day: weatherResponse.forecast.forecastday[i].date,title: weatherResponse.forecast.forecastday[i].day.avgtemp_c))
@@ -223,10 +219,7 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
                 }
             }
         }
-        
-       
-        
-        
+   
         //step 4: Start the task
         dataTask.resume()
     }
@@ -264,17 +257,12 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
         let baseURL = "https://api.weatherapi.com/v1/"
         let currentEndpoint = "forecast.json"
         let apiKey = "6cd0a76519b345399c7130516222911"
-//      let query = "q=Toronto"
+
         guard let url = "\(baseURL)\(currentEndpoint)?key=\(apiKey)&q=\(query)&days=8".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)else{
             return nil
         }
         return URL(string: url)
     }
-    
-    
-  
-
-    
     
     private func parseJson(data: Data) -> WeatherResponse? {
         let decoder = JSONDecoder()
@@ -317,10 +305,6 @@ struct Day: Decodable{
 struct Condition: Decodable{
     let code: Int
 }
-
-//struct ForecastDay:Decodable{
-//    let date: String
-//}
 
 
 struct Location:Decodable{
@@ -369,7 +353,7 @@ extension ViewController : MKMapViewDelegate{
                         
                             let image = UIImage(systemName: "sun.max")
                             view.leftCalloutAccessoryView = UIImageView(image: image)
-                        
+                            
                             break
                         
                         case 1003:
@@ -512,7 +496,7 @@ extension ViewController : MKMapViewDelegate{
                         case -100.0...0.0 :
                             view.markerTintColor = UIColor.purple
                             break
-                        case 0.0...11.0 :
+                        case 0.0...11.0:
                             view.markerTintColor = UIColor.systemBlue
                             break
                         case 12.0...16.0 :
@@ -532,15 +516,6 @@ extension ViewController : MKMapViewDelegate{
                             view.markerTintColor = UIColor.blue
                         }
 
-                        
-                        
-                        
-                        
-//                                   let image = UIImage(systemName: "cloud.fill")
-//                                   view.leftCalloutAccessoryView = UIImageView(image: image)
-//
-//                                    view.markerTintColor = UIColor.purple
-                        
                                     //change the color of accessories
                                     view.tintColor = UIColor.systemRed
                         
@@ -622,11 +597,7 @@ extension ViewController: UITableViewDelegate{
         loadWeather(search: selectedLocation.title)
         
         foreCast=[]
-        
-        
-        
-        //print(tableView.)
-        
+ 
 
     }
   
@@ -646,16 +617,161 @@ extension ViewController: UITableViewDataSource{
         cell.backgroundColor = UIColor.systemTeal
         let location = locations[indexPath.row]
         
+        
         var content = cell.defaultContentConfiguration()
+        
+        
         
         content.text = location.title
         content.secondaryText = location.description
         
-        cell.contentConfiguration = content
+      //  content.image = UIImage(systemName: "cloud")
         
+        
+        switch self.currentCode{
+            
+        case 1000:
+        
+            content.image = UIImage(systemName: "sun.max")
+            
+            
+            break
+        
+        case 1003:
+            
+        
+            content.image = UIImage(systemName: "cloud.sun")
+            
+        
+            break
+        case 1006:
+            content.image = UIImage(systemName: "cloud")
+         
+            break
+        case 1009:
+        
+            content.image = UIImage(systemName: "cloud.fill")
+            
+            break
+        case 1030:
+        
+            content.image = UIImage(systemName: "cloud.fog.fill")
+           
+            break
+        case 1063:
+        
+            content.image = UIImage(systemName: "cloud.drizzle")
+            
+            break
+        case 1066:
+        
+            content.image = UIImage(systemName: "cloud.snow")
+            
+            break
+        case 1069:
+        
+            content.image = UIImage(systemName: "cloud.sleet")
+          
+            break
+        case 1072:
+        
+            content.image = UIImage(systemName: "cloud.hail")
+            
+            break
+        case 1135:
+        
+            content.image = UIImage(systemName: "cloud.fog.circle")
+        
+            break
+        case 1147:
+        
+            content.image = UIImage(systemName: "cloud.fog.circle.fill")
+            
+            break
+        case 1150:
+        
+            content.image = UIImage(systemName: "cloud.sun.rain")
+           
+            break
+        case 1153:
+        
+            content.image = UIImage(systemName: "cloud.drizzle")
+        
+            break
+        case 1183:
+        
+            content.image = UIImage(systemName: "sun.max.fill")
+            break
+        case 1186:
+        
+            content.image = UIImage(systemName: "cloud.drizzle.fill")
+            break
+        case 1189:
+        
+            content.image = UIImage(systemName: "cloud.rain.fill")
+            break
+        case 1192:
+        
+            content.image = UIImage(systemName: "cloud.heavyrain")
+            break
+        case 1198:
+        
+            content.image = UIImage(systemName: "cloud.hail.fill")
+            break
+        case 1201:
+        
+            content.image = UIImage(systemName: "cloud.hail.circle.fill")
+            break
+        case 1204:
+        
+            content.image = UIImage(systemName: "cloud.sleet")
+            break
+        case 1207:
+        
+            content.image = UIImage(systemName: "cloud.sleet.fill")
+            break
+        case 1210:
+        
+            content.image = UIImage(systemName: "snowflake")
+            break
+        case 1213:
+        
+            content.image = UIImage(systemName: "cloud.snow")
+            break
+        case 1219:
+        
+            content.image = UIImage(systemName: "cloud.snow.fill")
+            break
+        case 1225:
+        
+            content.image = UIImage(systemName: "cloud.snow.circle")
+            break
+        case 1240:
+        
+            content.image = UIImage(systemName: "cloud.drizzle")
+            break
+        case 1243:
+        
+            content.image = UIImage(systemName: "cloud.heavyrain.fill")
+            break
+        default:
+            content.image = UIImage(systemName: "cloud.heavyrain.fill")
+             break
+        }
+        
+
+        
+        
+        //content.prefersSideBySideTextAndSecondaryText = true
+        cell.contentConfiguration = content
+//        let image : UIImage = UIImage(named: "osx_design_view_messages") ?? UIImage()
+//               print("The loaded image: \(image)")
+//        content.image = image
+       
         return cell
+        
     }
-    
+
     
 }
 
@@ -705,170 +821,3 @@ struct forecastday{
 
 
 
-
-//
-/////
-/////
-/////
-//switch intCode{
-//
-//
-//case 1003:
-//
-//    let image = UIImage(systemName: "cloud.sun")
-//    view.leftCalloutAccessoryView = UIImageView(image: image)
-//
-//    break
-//case 1006:
-//
-//    let image = UIImage(systemName: "cloud")
-//    view.leftCalloutAccessoryView = UIImageView(image: image)
-//    break
-//case 1009:
-//
-//    let image = UIImage(systemName: "cloud.fill")
-//    view.leftCalloutAccessoryView = UIImageView(image: image)
-//    break
-//case 1030:
-//
-//    let image = UIImage(systemName: "cloud.fog.fill")
-//    view.leftCalloutAccessoryView = UIImageView(image: image)
-//    break
-//case 1063:
-//
-//    let image = UIImage(systemName: "cloud.drizzle")
-//    view.leftCalloutAccessoryView = UIImageView(image: image)
-//    break
-//case 1066:
-//
-//    let image = UIImage(systemName: "cloud.snow")
-//    view.leftCalloutAccessoryView = UIImageView(image: image)
-//    break
-//case 1069:
-//
-//    let image = UIImage(systemName: "cloud.sleet")
-//    view.leftCalloutAccessoryView = UIImageView(image: image)
-//    break
-//case 1072:
-//
-//    let image = UIImage(systemName: "cloud.hail")
-//    view.leftCalloutAccessoryView = UIImageView(image: image)
-//    break
-//case 1135:
-//
-//    let image = UIImage(systemName: "cloud.fog.circle")
-//    view.leftCalloutAccessoryView = UIImageView(image: image)
-//    break
-//case 1147:
-//
-//    let image = UIImage(systemName: "cloud.fog.circle.fill")
-//    view.leftCalloutAccessoryView = UIImageView(image: image)
-//    break
-//case 1150:
-//
-//    let image = UIImage(systemName: "cloud.sun.rain")
-//    view.leftCalloutAccessoryView = UIImageView(image: image)
-//    break
-//case 1153:
-//
-//    let image = UIImage(systemName: "cloud.drizzle")
-//    view.leftCalloutAccessoryView = UIImageView(image: image)
-//    break
-//case 1183:
-//
-//    let image = UIImage(systemName: "sun.max.fill")
-//    view.leftCalloutAccessoryView = UIImageView(image: image)
-//    break
-//case 1186:
-//
-//    let image = UIImage(systemName: "cloud.drizzle.fill")
-//    view.leftCalloutAccessoryView = UIImageView(image: image)
-//    break
-//case 1189:
-//
-//    let image = UIImage(systemName: "cloud.rain.fill")
-//    view.leftCalloutAccessoryView = UIImageView(image: image)
-//    break
-//case 1192:
-//
-//    let image = UIImage(systemName: "cloud.heavyrain")
-//    view.leftCalloutAccessoryView = UIImageView(image: image)
-//    break
-//case 1198:
-//
-//    let image = UIImage(systemName: "cloud.hail.fill")
-//    view.leftCalloutAccessoryView = UIImageView(image: image)
-//    break
-//case 1201:
-//
-//    let image = UIImage(systemName: "cloud.hail.circle.fill")
-//    view.leftCalloutAccessoryView = UIImageView(image: image)
-//    break
-//case 1204:
-//
-//    let image = UIImage(systemName: "cloud.sleet")
-//    view.leftCalloutAccessoryView = UIImageView(image: image)
-//    break
-//case 1207:
-//
-//    let image = UIImage(systemName: "cloud.sleet.fill")
-//    view.leftCalloutAccessoryView = UIImageView(image: image)
-//    break
-//case 1210:
-//
-//    let image = UIImage(systemName: "snowflake")
-//    view.leftCalloutAccessoryView = UIImageView(image: image)
-//    break
-//case 1213:
-//
-//    let image = UIImage(systemName: "cloud.snow")
-//    view.leftCalloutAccessoryView = UIImageView(image: image)
-//    break
-//case 1219:
-//
-//    let image = UIImage(systemName: "cloud.snow.fill")
-//    view.leftCalloutAccessoryView = UIImageView(image: image)
-//    break
-//case 1225:
-//
-//    let image = UIImage(systemName: "cloud.snow.circle")
-//    view.leftCalloutAccessoryView = UIImageView(image: image)
-//    break
-//case 1240:
-//
-//    let image = UIImage(systemName: "cloud.drizzle")
-//    view.leftCalloutAccessoryView = UIImageView(image: image)
-//    break
-//case 1243:
-//
-//    let image = UIImage(systemName: "cloud.heavyrain.fill")
-//    view.leftCalloutAccessoryView = UIImageView(image: image)
-//    break
-//default:
-//    print("Nothig")
-//
-//}
-
-//switch myAnnotation.currentTemp!{
-//case -100.0...0.0 :
-//    view.markerTintColor = UIColor.systemBlue
-//    break
-//case 0.0...11.0 :
-//    view.markerTintColor = UIColor.systemBlue
-//    break
-//case 12.0...16.0 :
-//    view.markerTintColor = UIColor.systemMint
-//    break
-//case 17.0...24.0 :
-//    view.markerTintColor = UIColor.systemOrange
-//    break
-//case 25.0...30.0 :
-//    view.markerTintColor = UIColor.black
-//    break
-//case 35.0...100.0 :
-//    view.markerTintColor = UIColor.red
-//    break
-//
-//default:
-//    view.markerTintColor = UIColor.purple
-//}

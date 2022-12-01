@@ -5,7 +5,6 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
         <capability name="Map view configurations" minToolsVersion="14.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
-        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -37,7 +36,7 @@
                             </toolbar>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="nUV-Sq-9zp">
                                 <rect key="frame" x="0.0" y="425" width="390" height="332"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <color key="backgroundColor" red="0.88196798119999997" green="1" blue="0.98713583370000002" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="tableViweCell" id="OX3-WN-Zzm">
                                         <rect key="frame" x="0.0" y="50" width="390" height="43.666667938232422"/>
@@ -52,7 +51,7 @@
                             </tableView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <color key="backgroundColor" red="0.88196798119999997" green="1" blue="0.98713583370000002" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <constraints>
                             <constraint firstItem="n6c-dG-UGz" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="08F-xb-OKH"/>
                             <constraint firstItem="LeQ-mK-vdK" firstAttribute="top" secondItem="nUV-Sq-9zp" secondAttribute="bottom" id="0F9-YX-Otk"/>
@@ -119,8 +118,8 @@
                             </label>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="h6Z-SE-D8e">
                                 <rect key="frame" x="0.0" y="397" width="390" height="390"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                <color key="sectionIndexBackgroundColor" systemColor="systemIndigoColor"/>
+                                <color key="backgroundColor" red="0.88196798119999997" green="1" blue="0.98713583370000002" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color key="sectionIndexBackgroundColor" red="0.88196798119999997" green="1" blue="0.98713583370000002" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <color key="sectionIndexTrackingBackgroundColor" red="0.39746903119999999" green="0.38993119320000003" blue="0.96611279250000004" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="forecastCell" id="k7o-BI-Udi">
@@ -148,7 +147,7 @@
                             </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="r1b-h1-gqP"/>
-                        <color key="backgroundColor" red="0.45347049211071699" green="0.57097224271267044" blue="0.76871567964553833" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <color key="backgroundColor" red="0.88196798119999997" green="1" blue="0.98713583370000002" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <constraints>
                             <constraint firstItem="h6Z-SE-D8e" firstAttribute="trailing" secondItem="r1b-h1-gqP" secondAttribute="trailing" id="1c2-wx-ee6"/>
                             <constraint firstItem="VSE-mv-hu5" firstAttribute="centerX" secondItem="oK5-RU-wvz" secondAttribute="centerX" constant="25" id="2vV-6h-Ogl"/>
@@ -213,9 +212,9 @@
                                     </button>
                                 </subviews>
                             </stackView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="CurretWeatherCondition" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FK1-Nb-6r4">
-                                <rect key="frame" x="102.33333333333333" y="361.33333333333331" width="185.66666666666669" height="20.333333333333314"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FK1-Nb-6r4">
+                                <rect key="frame" x="195" y="361.33333333333331" width="0.0" height="0.0"/>
+                                <fontDescription key="fontDescription" name="HiraMaruProN-W4" family="Hiragino Maru Gothic ProN" pointSize="23"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -243,7 +242,7 @@
                             </stackView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="e2N-yo-AX1"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <color key="backgroundColor" red="0.88196798115296826" green="1" blue="0.98713583370033142" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <constraints>
                             <constraint firstItem="FK1-Nb-6r4" firstAttribute="centerX" secondItem="Psx-mA-Xgm" secondAttribute="centerX" id="7Cl-NF-RHd"/>
                             <constraint firstItem="6i1-MW-aOx" firstAttribute="centerY" secondItem="Psx-mA-Xgm" secondAttribute="centerY" constant="300" id="LJt-eQ-cOf"/>
@@ -269,11 +268,5 @@
     </scenes>
     <resources>
         <image name="magnifyingglass" catalog="system" width="128" height="117"/>
-        <systemColor name="systemBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
-        <systemColor name="systemIndigoColor">
-            <color red="0.34509803921568627" green="0.33725490196078434" blue="0.83921568627450982" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
     </resources>
 </document>
