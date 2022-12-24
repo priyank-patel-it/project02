@@ -17,6 +17,7 @@ class addLocationViewController: UIViewController ,UITextFieldDelegate{
     var currentTemp1: Float?
     var highTemp1: Float?
     var lowTemp1: Float?
+    var goToErrorScreen = "goToErrorScreen"
     
     private let goToMainViewController = "goToMainViewController"
     
@@ -35,6 +36,10 @@ class addLocationViewController: UIViewController ,UITextFieldDelegate{
     
     
     @IBAction func onSearchTapped(_ sender: UIButton) {
+        if searchTextField.text == "qqqqq"{
+              performSegue(withIdentifier: goToErrorScreen, sender: self)
+            
+        }
         loadWeather(search: searchTextField.text)
     }
     
@@ -124,7 +129,7 @@ class addLocationViewController: UIViewController ,UITextFieldDelegate{
         
         let baseURL = "https://api.weatherapi.com/v1/"
         let currentEndpoint = "forecast.json"
-        let apiKey = "6cd0a76519b345399c7130516222911"
+        let apiKey = "bc1b78fe2d23461aa7d43032221612"
 //      let query = "q=Toronto"
         guard let url = "\(baseURL)\(currentEndpoint)?key=\(apiKey)&q=\(query)&days=8".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)else{
             return nil

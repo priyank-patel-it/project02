@@ -15,6 +15,7 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var mapView: MKMapView!
 
+    @IBOutlet weak var editKey: UIBarButtonItem!
     var clTemperature:Float!
     var location: String!
     var currentTemp: Float!
@@ -24,6 +25,8 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
     var avgTemp: Float!
     var forecastCode: Int!
     var currentCode: Int!
+    
+    var inputKeyValue: String!
 
     var locationManager:CLLocationManager!
     var foreCast:[forecastday] = []
@@ -33,9 +36,11 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
     
     
     var getData: String?
+    var inputApi: String?
     
     private let goToDetailScreen = "goToDetailScreen"
     private let goToAddLocationScreen = "goToAddLocationScreen"
+    private let goToErrorScreen = "goToErrorScreen"
     
     
     
@@ -44,6 +49,8 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
         super.viewDidLoad()
         print("Got data")
         print(" Got data: \(getData ?? "")")
+        
+        editKey.image = UIImage(systemName: "key")
        
         locationManager = CLLocationManager()
         locationManager.delegate = self
@@ -60,9 +67,7 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
                
                 print("Location is anable")
                 self.locationManager.startUpdatingLocation()
-            
-               
-                
+   
             }
             else{
                 print("Location is not anabled..!")
@@ -70,6 +75,32 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
         }
         
        
+    }
+    
+    
+    
+    @IBAction func editTapped(_ sender: UIBarButtonItem) {
+        
+        let alert = UIAlertController(title: "New Api Key", message: "Please enter new API key", preferredStyle: .alert)
+        let okButton = UIAlertAction(title: "OK", style: .default){
+            _ in print("Ok pressed")
+            // don't know how to get the input from addTextField
+            
+        }
+
+        let cancelButton = UIAlertAction(title: "Cancel", style: .default){
+            _ in print("Calcel Pressed")
+        }
+    
+        alert.addTextField()
+        
+        alert.addAction(okButton)
+        alert.addAction(cancelButton)
+        self.show(alert, sender: nil)
+        
+      //  performSegue(withIdentifier: goToErrorScreen, sender: self)
+        
+        
     }
     
 
@@ -109,6 +140,10 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
     
     }
     
+    
+    
+    
+    //method for getting current location
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
         //setting delegate
@@ -151,6 +186,8 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
         
         
     }
+    
+  
     
     private func loadWeather(search:String?){
 //        mapView.delegate = self
@@ -196,10 +233,10 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
                     self.minTemp = weatherResponse.forecast.forecastday[0].day.mintemp_c
                     self.currentCode = weatherResponse.current.condition.code
                    
-                    for i in 1...7{
+                    for i in 1...2{
                         self.foreCast.append(forecastday(code:weatherResponse.forecast.forecastday[i].day.condition.code, day: weatherResponse.forecast.forecastday[i].date,title: weatherResponse.forecast.forecastday[i].day.avgtemp_c))
                     }
-                    print("FORECAST OF 7 DAYS:\(self.foreCast)")
+                    print("FORECAST OF 2 DAYS:\(self.foreCast)")
                     
                     
                     
@@ -256,7 +293,7 @@ class ViewController: UIViewController ,CLLocationManagerDelegate{
         
         let baseURL = "https://api.weatherapi.com/v1/"
         let currentEndpoint = "forecast.json"
-        let apiKey = "6cd0a76519b345399c7130516222911"
+        let apiKey = "bc1b78fe2d23461aa7d43032221612"
 
         guard let url = "\(baseURL)\(currentEndpoint)?key=\(apiKey)&q=\(query)&days=8".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)else{
             return nil
@@ -538,6 +575,8 @@ extension ViewController : MKMapViewDelegate{
         // view.annotation.
     }
     
+    //for sendig data through segue
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == goToDetailScreen{
             let viewController = segue.destination as! detailScreenViewController
@@ -586,7 +625,7 @@ class MyAnnotation: NSObject, MKAnnotation {
     
 }
 
-//extentio for table view delegate
+//extention for table view delegate
 extension ViewController: UITableViewDelegate{
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("Location tapped ")

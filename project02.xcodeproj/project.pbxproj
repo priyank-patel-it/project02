@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1629773C294CD69C002C3323 /* errorScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1629773B294CD69C002C3323 /* errorScreenViewController.swift */; };
 		1631EF9129245488006A04AE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1631EF9029245488006A04AE /* AppDelegate.swift */; };
 		1631EF9329245488006A04AE /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1631EF9229245488006A04AE /* SceneDelegate.swift */; };
 		1631EF9529245488006A04AE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1631EF9429245488006A04AE /* ViewController.swift */; };
@@ -18,6 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1629773B294CD69C002C3323 /* errorScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = errorScreenViewController.swift; sourceTree = "<group>"; };
 		1631EF8D29245488006A04AE /* project02.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = project02.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1631EF9029245488006A04AE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1631EF9229245488006A04AE /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -69,6 +71,7 @@
 				1631EF9E29245489006A04AE /* Info.plist */,
 				168266002928B2260093A540 /* detailScreenViewController.swift */,
 				16430465292941DF008CA159 /* addLocationViewController.swift */,
+				1629773B294CD69C002C3323 /* errorScreenViewController.swift */,
 			);
 			path = project02;
 			sourceTree = "<group>";
@@ -149,6 +152,7 @@
 				1631EF9129245488006A04AE /* AppDelegate.swift in Sources */,
 				168266012928B2260093A540 /* detailScreenViewController.swift in Sources */,
 				1631EF9329245488006A04AE /* SceneDelegate.swift in Sources */,
+				1629773C294CD69C002C3323 /* errorScreenViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
