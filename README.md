@@ -4,7 +4,8 @@
 
 ## Demo:
 
-[![Alt text for your video](https://youtu.be/-RfYlO3GEUk)](https://youtu.be/-RfYlO3GEUk)
+[![Alt text for your video](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://youtu.be/-RfYlO3GEUk)
+
 
 
 ## Features
