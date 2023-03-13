@@ -3,8 +3,7 @@
 * The Weather App is an iOS application that allows users to view the current weather conditions and seven-day forecast of their current location and any location they search for. It is built using Swift, Weather API, MapKit, Annotation, Callouts, Optimization with Dequeue, Core Location, Networking, and Navigation with Segues.
 
 ## Demo Video:
-
-[![Alt text for your video](https://img.youtube.com/vi/-RfYlO3GEUk/0.jpg)](https://youtu.be/-RfYlO3GEUk)
+https://user-images.githubusercontent.com/78679097/224770753-3c694005-d835-4f8b-8b08-e77cbd273504.mov
 
 
 
